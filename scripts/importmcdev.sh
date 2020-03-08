@@ -6,15 +6,15 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 	SOURCE="$(readlink "$SOURCE")"
 	[[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
-. $(dirname $SOURCE)/init.sh
+. $(dirname "$SOURCE")/init.sh
 
 workdir=$basedir/Paper/work
-minecraftversion=$(cat $basedir/Paper/work/BuildData/info.json | grep minecraftVersion | cut -d '"' -f 4)
+minecraftversion=$(cat "$basedir"/Paper/work/BuildData/info.json | grep minecraftVersion | cut -d '"' -f 4)
 decompiledir=$workdir/Minecraft/$minecraftversion/spigot
 
 nms="net/minecraft/server"
 export MODLOG=""
-cd $basedir
+cd "$basedir" || exit
 
 function containsElement {
 	local e
@@ -45,7 +45,7 @@ function import {
 }
 
 (
-	cd Paper/Paper-Server/
+	cd Paper/Paper-Server/ || exit
 	lastlog=$(git log -1 --oneline)
 	if [[ "$lastlog" = *"EMC-Extra mc-dev Imports"* ]]; then
 		git reset --hard HEAD^
@@ -64,7 +64,7 @@ for f in $files; do
 			if [ ! -f "$decompiledir/$nms/$f.java" ]; then
 				echo "$(bashColor 1 31) ERROR!!! Missing NMS$(bashColor 1 34) $f $(bashColorReset)";
 			else
-				import $f
+				import "$f"
 			fi
 		fi
 	fi
@@ -80,7 +80,7 @@ done
 
 ################
 (
-	cd Paper/Paper-Server/
+	cd Paper/Paper-Server/ || exit
 	rm -rf nms-patches
 	git add src -A
 	echo -e "EMC-Extra mc-dev Imports\n\n$MODLOG" | git commit src -F -

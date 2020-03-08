@@ -9,7 +9,7 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 SOURCE=$([[ "$SOURCE" = /* ]] && echo "$SOURCE" || echo "$PWD/${SOURCE#./}")
 basedir=$(dirname "$SOURCE")
-. $basedir/scripts/init.sh
+. "$basedir"/scripts/init.sh
 
 paperstash() {
 	STASHED=$(git stash)
@@ -40,16 +40,16 @@ case "$1" in
 	(
 		basedir
 		mvn -N install
-		cd ${FORK_NAME}-API
-		mvn clean install && cd ../${FORK_NAME}-Server && mvn clean install
+		cd "${FORK_NAME}"-API
+		mvn clean install && cd ../"${FORK_NAME}"-Server && mvn clean install
 	)
 	;;
 	"d" | "de" | "deploy")
 	(
 		basedir
 		mvn -N install
-		cd ${FORK_NAME}-API
-		mvn clean deploy && cd ../${FORK_NAME}-Server && mvn clean install
+		cd "${FORK_NAME}"-API
+		mvn clean deploy && cd ../"${FORK_NAME}"-Server && mvn clean install
 	)
 	;;
 	"up" | "upstream")
